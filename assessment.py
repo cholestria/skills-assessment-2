@@ -41,3 +41,92 @@ Part 1: Discussion
 
 # Parts 2 through 5:
 # Create your classes and class methods
+
+class Student(object):
+    """A student"""
+
+    def __init__(self, first_name, last_name, address):
+        """Initialize student attributes"""
+
+        self.first_name = first_name
+        self.last_name = last_name
+        self.address = address
+        self.score = None
+
+
+class Question(object):
+    """A Question"""
+
+    def __init__(self, question, correct_answer):
+        """Initialize question attributes"""
+
+        self.question = question
+        self.correct_answer = correct_answer
+
+    def __repr__(self):
+        """Returns the question and answer"""
+
+        return self.question + " " + self.correct_answer
+
+    def ask_and_evaluate(self):
+        """Takes a question and answer"""
+
+        user_answer = raw_input(self.question + " >")
+        return user_answer == self.correct_answer
+
+
+class Exam(object):
+    """An Exam"""
+
+    def __init__(self, name):
+        """Initialize exam attributes"""
+
+        self.name = name
+        self.questions = []
+
+    def add_question(self, question, correct_answer):
+        """Add questions to exam"""
+
+        question_object = Question(question, correct_answer)
+        self.questions.append(question_object)
+
+    def administer(self):
+        """Ask questions and return score as %"""
+
+        score = 0
+        for each in self.questions:
+            if each.ask_and_evaluate() is True:
+                score += 1
+        return float(score) * 100.0 / len(self.questions)
+
+
+class Quiz(Exam):
+    """A quiz is a pass/fail type of exam"""
+
+    def administer(self):
+        """Determine if score is pass or fail"""
+
+        quiz_score = super(Quiz, self).administer()
+        return quiz_score >= 50.0
+
+
+def take_test(exam, student):
+    """Take test and assign score to student"""
+
+    score = exam.administer()
+    student.score = score
+    print student.first_name + " " + student.last_name + "'s score is: " + str(score)
+
+
+def example():
+    """Creates exam and administers test for student"""
+
+    sample_exam = Quiz("Exam's Name")
+
+    sample_exam.add_question("What is 3 + 2?", "5")
+    sample_exam.add_question("What is 3 + 3?", "6")
+    sample_exam.add_question("What is 3 + 4?", "7")
+
+    example_student = Student("Bob", "Smith", "San Francisco")
+
+    take_test(sample_exam, example_student)
